@@ -1,0 +1,32 @@
+package customers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+//	ICustomerDAO customerDAO = new CustomerDAO();
+//	IEmailSender emailSender = new EmailSender();
+
+	private CustomerDAO customerDAO;
+	private EmailSender emailSender;
+
+	@Autowired
+	public void setCustomerDAO(CustomerDAO customerDAO){
+		this.customerDAO = customerDAO;
+	}
+
+	@Autowired
+	public void setEmailSender(EmailSender emailSender){
+		this.emailSender = emailSender;
+	}
+
+	public void addCustomer(String name, String email, String street,
+			String city, String zip) {
+		Customer customer = new Customer(name, email);
+		Address address = new Address(street, city, zip);
+		customer.setAddress(address);
+		customerDAO.save(customer);
+		emailSender.sendEmail(email, "Welcome " + name + " as a new customer");
+	}
+}
